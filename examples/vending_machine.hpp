@@ -62,6 +62,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
         bool
         operator()(FSM const& fsm, State const&) const
         {
+            printf("\tGUARD: is_empty\n");
             return root_machine(fsm).is_empty();
         }
     };
@@ -70,6 +71,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
         bool
         operator()(FSM const& fsm, State const&) const
         {
+            printf("\tGUARD: prices_correct\n");
             return root_machine(fsm).prices_correct();
         }
     };
@@ -78,6 +80,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
         bool
         operator()(FSM const& fsm, State const&, Event const& evt) const
         {
+            printf("\tGUARD: goods_exist\n");
             return root_machine(fsm).goods_exist(evt.p_no);
         }
     };
@@ -97,6 +100,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
             bool
             operator()(on_fsm const& fsm, State const&, events::start_maintenance const& evt) const
             {
+                printf("\tGUARD: check_secret\n");
                 return root_machine(fsm).secret == evt.secret;
             }
         };
@@ -114,6 +118,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
                 bool
                 operator()(FSM const&, State const&, events::load_goods const& goods) const
                 {
+                    printf("\tGUARD: check_amount\n");
                     return goods.amount >= 0;
                 }
             };
@@ -122,6 +127,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
                 bool
                 operator()(FSM const&, State const&, events::set_price const& price) const
                 {
+                    printf("\tGUARD: check_price\n");
                     return price.price >= 0;
                 }
             };
@@ -132,6 +138,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
                 void
                 operator()(events::set_price&& price, FSM& fsm) const
                 {
+                    printf("\tACTION: set_price\n");
                     root_machine(fsm).set_price(price.p_no, price.price);
                 }
             };
@@ -166,6 +173,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
                 bool
                 operator()(FSM const& fsm, State const& state, events::select_item const& item) const
                 {
+                    printf("\tGUARD: enough_money\n");
                     return root_machine(fsm).get_price(item.p_no) <= state.balance;
                 }
             };
@@ -177,6 +185,7 @@ struct vending_def : ::afsm::def::state_machine<vending_def> {
                 void
                 operator()(events::select_item&& item, FSM& fsm) const
                 {
+                    printf("\tACTION: dispense\n");
                     root_machine(fsm).dispense_product(item.p_no);
                 }
             };

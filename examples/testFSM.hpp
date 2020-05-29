@@ -16,6 +16,7 @@ struct minimal_def : ::afsm::def::state_machine<minimal_def> {
     //@}
 
     using initial_state = initial;
+    
     using transitions   = transition_table<
         /*  State       Event               Next        */
         tr< initial,    events::start,      running     >,

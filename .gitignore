@@ -38,3 +38,4 @@ build*
 # CLion settings
 .idea
 
+.DS_Store

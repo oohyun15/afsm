@@ -28,7 +28,8 @@ set(
     #common_base_test.cpp
     #vending_machine_test.cpp
     #pushdown_tests.cpp
-    minimalFSM_test.cpp
+    #minimalFSM_test.cpp
+    vending_machine_testcase.cpp
 )
 add_executable(test-afsm-base ${test_program_SRCS})
 target_link_libraries(
