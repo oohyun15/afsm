@@ -14,7 +14,7 @@ using result = ::afsm::actions::event_process_result;
 template < typename T >
 using event = afsm::detail::event<T>;
 
-TEST(vending_def, off_to_on)
+TEST(vending_FSM, off_to_on)
 {
     printf("\nINITIALIZE VENDING MACHINE.\n");
     vending_machine vm;
@@ -36,18 +36,17 @@ TEST(on, maintenance_to_serving)
 {
     printf("\nINITIALIZE VENDING MACHINE.\n");
     vending_machine vm;
-
-    // 1. initial state
-    printf("\n1. initial state\n");
     EXPECT_TRUE(vm.is_in_state< vending_def::off >());
     EXPECT_TRUE(done(vm.process_event(events::power_on{})));
     EXPECT_TRUE(vm.is_in_state< vending_def::on::out_of_service >());
 
     EXPECT_TRUE(done(vm.process_event(events::start_maintenance{vending_machine::factory_code})));
-    EXPECT_TRUE(vm.is_in_state< vending_def::on::maintenance >());
-
     EXPECT_TRUE(done(vm.process_event(events::load_goods{ 0, 10 })));
     EXPECT_TRUE(done(vm.process_event(events::set_price{ 0, 10.0 })));
+
+    // 1. initial state
+    printf("\n1. initial state\n");
+    EXPECT_TRUE(vm.is_in_state< vending_def::on::maintenance >());
 
     // 2. transitions
     printf("\n2. transitions\n");
@@ -65,15 +64,14 @@ TEST(serving, active_to_idle)
         { 0, { 10, 15.0f } },
         { 1, { 100, 5.0f } }
     }};
-
-    // 1. initial state
-    printf("\n1. initial state\n");
     EXPECT_TRUE(vm.is_in_state< vending_def::off >());
     EXPECT_TRUE(done(vm.process_event(events::power_on{})));
     EXPECT_TRUE(vm.is_in_state< vending_def::on::serving >());
     EXPECT_TRUE(vm.is_in_state< vending_def::on::serving::idle >());
-
     EXPECT_TRUE(done(vm.process_event(events::money{10})));
+
+    // 1. initial state
+    printf("\n1. initial state\n");
     EXPECT_TRUE(vm.is_in_state< vending_def::on::serving::active >());
     
     // 2. transitions
